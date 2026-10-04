@@ -1,0 +1,64 @@
+# Intégration continue : Test à chaque push
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  # Les tests tournent sur Linux : c'est là que GitHub sait démarrer un PostgreSQL à côté.
+  tests:
+    runs-on: ubuntu-latest
+
+    # Base PostgreSQL jetable, créée pour la durée des tests puis détruite.
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_DB: cinedoors
+          POSTGRES_USER: cinedoors
+          POSTGRES_PASSWORD: mot_de_passe_ci
+        ports:
+          - 5432:5432
+        # GitHub attend que la base réponde avant de lancer les étapes.
+        options: >-
+          --health-cmd "pg_isready -U cinedoors -d cinedoors"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 10
+
+    # La chaîne de connexion vers cette base jetable. Ce mot de passe n'est pas un secret :
+    # il n'existe que dans la machine de test.
+    env:
+      CINEDOORS_DB: Host=localhost;Port=5432;Database=cinedoors;Username=cinedoors;Password=mot_de_passe_ci
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Installer l'outil des migrations
+        run: dotnet tool install --global dotnet-ef
+
+      - name: Créer les tables
+        run: dotnet ef database update -p src/CineDoors.Infrastructure -s src/CineDoors.Infrastructure
+
+      - name: Lancer les tests
+        run: dotnet test tests/CineDoors.Tests
+
+  # L'application WPF ne compile que sur Windows.
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Compiler toute la solution
+        run: dotnet build CineDoors.slnx
