@@ -1,0 +1,31 @@
+﻿<Window x:Class="CineDoors.App.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="CineDoors"
+        Width="1100" Height="680"
+        MinWidth="1024" MinHeight="600"
+        WindowStartupLocation="CenterScreen"
+        Background="{StaticResource BackgroundBrush}"
+        StateChanged="Window_StateChanged">
+
+    <!-- Remplace la barre de titre de Windows par la nôtre.
+         CaptionHeight : hauteur de la zone du haut qui sert à déplacer la fenêtre.
+         ResizeBorderThickness : épaisseur de la bordure qui sert à redimensionner. -->
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="32" ResizeBorderThickness="6" GlassFrameThickness="0"
+                      CornerRadius="0" UseAeroCaptionButtons="False" />
+    </WindowChrome.WindowChrome>
+
+    <Grid x:Name="RootGrid">
+
+        <!-- La fenêtre affiche un écran à la fois. Pour l'instant : l'écran de connexion. -->
+        <ContentControl x:Name="ScreenHost"/>
+
+        <!-- Notre barre de titre, posée par-dessus l'écran : les trois boutons, en haut à droite -->
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top">
+            <Button x:Name="MinimizeButton" Style="{StaticResource TitleBarButton}" Content="&#xE921;" Click="MinimizeButton_Click" />
+            <Button x:Name="MaximizeButton" Style="{StaticResource TitleBarButton}" Content="&#xE922;" Click="MaximizeButton_Click" />
+            <Button x:Name="CloseButton" Style="{StaticResource TitleBarCloseButton}" Content="&#xE8BB;" Click="CloseButton_Click" />
+        </StackPanel>
+    </Grid>
+</Window>

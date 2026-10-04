@@ -1,0 +1,53 @@
+﻿<UserControl x:Class="CineDoors.App.Views.HomeView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Loaded="HomeView_Loaded">
+
+    <DockPanel Margin="26,34,0,0">
+
+        <TextBlock DockPanel.Dock="Top" Text="Dernières sorties" FontSize="30" FontWeight="SemiBold" Margin="0,0,0,18" />
+
+        <!-- Message de chargement ou d'erreur. Masqué quand la grille est affichée. -->
+        <TextBlock x:Name="StatusText" DockPanel.Dock="Top" Text="Chargement..." Foreground="{StaticResource MutedTextBrush}"
+                   TextWrapping="Wrap" Margin="0,0,26,0" />
+
+        <!-- La grille défile verticalement quand il y a plus de films que de place -->
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+
+            <!-- ItemsControl répète le modèle ci-dessous pour chaque élément de sa liste.
+                 La liste est fournie par le C# : MoviesList.ItemsSource = ... -->
+            <ItemsControl x:Name="MoviesList" Margin="0,0,10,20">
+
+                <!-- Disposition : les cartes se suivent et passent à la ligne quand la largeur est pleine.
+                     Le nombre de colonnes s'adapte donc à la taille de la fenêtre. -->
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+
+                <!-- Modèle d'une carte. {Binding X} affiche la propriété X de l'objet MovieCard. -->
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Width="170" Margin="0,0,16,22">
+
+                            <!-- Affiche au format 2:3. Le fond gris se voit tant que l'image charge, ou s'il n'y en a pas. -->
+                            <Border Width="170" Height="255" CornerRadius="8" Background="{StaticResource InputBrush}">
+                                <Border CornerRadius="8">
+                                    <Border.Background>
+                                        <ImageBrush ImageSource="{Binding PosterUrl}" Stretch="UniformToFill" />
+                                    </Border.Background>
+                                </Border>
+                            </Border>
+
+                            <TextBlock Text="{Binding Title}" FontSize="14" FontWeight="SemiBold" Margin="2,8,0,0"
+                                       TextTrimming="CharacterEllipsis" ToolTip="{Binding Title}" />
+                            <TextBlock Text="{Binding Subtitle}" FontSize="12" Foreground="{StaticResource MutedTextBrush}" Margin="2,2,0,0"
+                                       TextTrimming="CharacterEllipsis" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+    </DockPanel>
+</UserControl>

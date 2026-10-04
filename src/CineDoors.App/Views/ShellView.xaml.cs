@@ -1,0 +1,58 @@
+﻿using System.Printing;
+using System.Windows;
+using System.Windows.Controls;
+using CineDoors.Core.Entities;
+
+namespace CineDoors.App.Views;
+
+// Ecran principal une fois connecté (Navigation à gauche, résultat de l'écran choisi à droite)
+
+public partial class ShellView : UserControl // UserControl désigne une fenêtre imbriquée (fenêtre qui devra s'ouvrir dans une autre)
+{
+    private readonly AppUser _user;
+    private readonly MainWindow _mainWindow;
+    private readonly TmdbClient _tmdbClient;
+
+    public ShellView(AppUser user, MainWindow mainWindow, TmdbClient tmdbClient)
+    {
+        InitializeComponent();
+
+        _user = user;
+        _mainWindow = mainWindow;
+        _tmdbClient = tmdbClient;
+
+        // Affiché en bas à gauche (partie compte utilisateur)
+        UsernameText.Text = user.Username;
+        UserInitialText.Text = user.Username.Substring(0, 1).ToUpper(); // Première lettre du pseudo comme icone temporairement
+
+        // Accueil est sélectionné par défaut après la connexion
+        HomeButton.IsChecked = true;
+    }
+
+    private void NavButton_Checked(object sender, RoutedEventArgs e) // Permet de naviguer entre les X écrans grâce aux boutons de navigation à gauche. "sender" retient celui qui a été cliqué
+    {
+        RadioButton button = (RadioButton)sender; // RadioButton est précisé pour que le compilateur puisse le lire l'acter comme et en lire le texte. Evite des erreurs après compilation
+        string pageName = (string)button.Content;
+
+        // Accueil : le vrai écran
+        if (button == HomeButton)
+        {
+            PageHost.Content = new HomeView(_tmdbClient);
+            return;
+        }
+
+        // Ecran provisoire # TODO
+        TextBlock placeholder = new TextBlock();
+        placeholder.Text = pageName + " : bientôt disponible";
+        placeholder.FontSize = 22;
+        placeholder.HorizontalAlignment = HorizontalAlignment.Center;
+        placeholder.VerticalAlignment = VerticalAlignment.Center;
+
+        PageHost.Content = placeholder;
+    }
+
+    private void LogoutButton_Click(object sender, RoutedEventArgs e) // Si appui sur btn déconnexion
+    {
+        _mainWindow.ShowLogin(); // Retour à l'écran de connexion
+    }
+}

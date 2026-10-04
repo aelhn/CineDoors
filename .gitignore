@@ -1,0 +1,27 @@
+# Build
+bin/
+obj/
+publish/
+
+# Visual Studio / Rider / VS Code
+.vs/
+.idea/
+.vscode/
+*.user
+*.suo
+
+# Tests
+TestResults/
+coverage/
+
+# Documents de travail (non publiés)
+docs/
+workflow.txt
+
+# Affiches de films (droit d'auteur, non publiées)
+img/
+
+# Secrets
+.env
+appsettings.Development.json
+appsettings.Local.json

@@ -1,0 +1,172 @@
+﻿<UserControl x:Class="CineDoors.App.Views.LoginView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Grid ClipToBounds="True">
+
+        <!-- ================= Fond : mur d'affiches incliné et assombri ================= -->
+        <!-- Le Viewbox agrandit le mur pour qu'il couvre toujours toute la fenêtre -->
+        <Viewbox Stretch="UniformToFill">
+            <!-- Les affiches sont ajoutées par le code C# (LoginView.xaml.cs) -->
+            <UniformGrid x:Name="PosterWall" Rows="4" Columns="7" Width="2100" Height="1800"
+                         RenderTransformOrigin="0.5,0.5">
+                <UniformGrid.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform ScaleX="1.35" ScaleY="1.35" />
+                        <RotateTransform Angle="-10" />
+                    </TransformGroup>
+                </UniformGrid.RenderTransform>
+            </UniformGrid>
+        </Viewbox>
+
+        <!-- Voile sombre par-dessus les affiches, pour qu'elles ne gênent pas la lecture -->
+        <Rectangle Fill="#0C0F0D" Opacity="0.78" />
+
+        <!-- ================= Carte centrale ================= -->
+        <!-- Les marges en étoile (1*) laissent environ 8 % de vide de chaque côté, quelle que soit la taille de la fenêtre -->
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="10*" />
+                <ColumnDefinition Width="1*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1*" />
+                <RowDefinition Height="10*" />
+                <RowDefinition Height="1*" />
+            </Grid.RowDefinitions>
+
+            <!-- Le Viewbox agrandit ou réduit toute la carte d'un bloc : champs, textes et boutons suivent la taille de la fenêtre -->
+            <Viewbox Grid.Row="1" Grid.Column="1" Stretch="Uniform">
+                <Border Width="980" Height="560" CornerRadius="14" Background="{StaticResource SurfaceBrush}">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <!-- Volet décoratif : 3 parts de la largeur. Formulaire : 2 parts. -->
+                            <ColumnDefinition Width="3*" />
+                            <ColumnDefinition Width="2*" />
+                        </Grid.ColumnDefinitions>
+
+                        <!-- ================= Volet gauche : décor et accueil ================= -->
+                        <Border Grid.Column="0" CornerRadius="14,0,0,14" ClipToBounds="True">
+                            <Border.Background>
+                                <!-- Dégradé du vert sapin vers le gris-noir -->
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                    <GradientStop Color="#1F6B4A" Offset="0" />
+                                    <GradientStop Color="#12392A" Offset="0.55" />
+                                    <GradientStop Color="#151A17" Offset="1" />
+                                </LinearGradientBrush>
+                            </Border.Background>
+
+                            <Grid>
+                                <!-- Formes décoratives : des rectangles arrondis inclinés, en bas du volet -->
+                                <Canvas VerticalAlignment="Bottom" Height="260" Opacity="0.55">
+                                    <Rectangle Canvas.Left="10" Canvas.Top="150" Width="230" Height="46" RadiusX="23" RadiusY="23" Fill="#2E8B5F">
+                                        <Rectangle.RenderTransform>
+                                            <RotateTransform Angle="-35" />
+                                        </Rectangle.RenderTransform>
+                                    </Rectangle>
+                                    <Rectangle Canvas.Left="170" Canvas.Top="190" Width="260" Height="60" RadiusX="30" RadiusY="30" Fill="#4CB88A">
+                                        <Rectangle.RenderTransform>
+                                            <RotateTransform Angle="-35" />
+                                        </Rectangle.RenderTransform>
+                                    </Rectangle>
+                                    <Rectangle Canvas.Left="330" Canvas.Top="220" Width="200" Height="34" RadiusX="17" RadiusY="17" Fill="#1F6B4A">
+                                        <Rectangle.RenderTransform>
+                                            <RotateTransform Angle="-35" />
+                                        </Rectangle.RenderTransform>
+                                    </Rectangle>
+                                    <Rectangle Canvas.Left="80" Canvas.Top="250" Width="150" Height="8" RadiusX="4" RadiusY="4" Fill="#9FE0C0">
+                                        <Rectangle.RenderTransform>
+                                            <RotateTransform Angle="-35" />
+                                        </Rectangle.RenderTransform>
+                                    </Rectangle>
+                                    <Rectangle Canvas.Left="250" Canvas.Top="120" Width="110" Height="6" RadiusX="3" RadiusY="3" Fill="#9FE0C0">
+                                        <Rectangle.RenderTransform>
+                                            <RotateTransform Angle="-35" />
+                                        </Rectangle.RenderTransform>
+                                    </Rectangle>
+                                </Canvas>
+
+                                <!-- Nom de l'application et phrase d'accueil, centrés -->
+                                <StackPanel Margin="50,0,50,150" VerticalAlignment="Center">
+                                    <TextBlock Text="CineDoors" FontSize="56" FontWeight="SemiBold" Foreground="White" HorizontalAlignment="Center" />
+                                    <TextBlock Margin="0,14,0,0" FontSize="15" Foreground="#D5E5DD" TextWrapping="Wrap" MaxWidth="420"
+                                               HorizontalAlignment="Center" TextAlignment="Center"
+                                               Text="Suivez vos films et vos séries, comptez vos heures de visionnage et ne manquez plus aucune sortie." />
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+
+                        <!-- ================= Volet droit : formulaire ================= -->
+                        <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="45,0" MaxWidth="300">
+
+                            <TextBlock x:Name="TitleText" Text="CONNEXION" FontSize="16" 
+                                       Foreground="{StaticResource AccentTextBrush}" Margin="0,0,0,26" />
+
+                            <!-- Pseudo -->
+                            <Border Style="{StaticResource InputFrame}">
+                                <DockPanel>
+                                    <TextBlock Style="{StaticResource InputIcon}" Text="&#xE77B;" />
+                                    <Grid>
+                                        <TextBlock x:Name="UsernamePlaceholder" Style="{StaticResource InputPlaceholder}" Text="Pseudo" />
+                                        <TextBox x:Name="UsernameBox" Style="{StaticResource InputText}" TextChanged="UsernameBox_TextChanged" />
+                                    </Grid>                                </DockPanel>
+                            </Border>
+
+                            <!-- E-mail : visible seulement en mode "création de compte" -->
+                            <Border x:Name="EmailFrame" Style="{StaticResource InputFrame}" Margin="0,14,0,0" Visibility="Collapsed">
+                                <DockPanel>
+                                    <TextBlock Style="{StaticResource InputIcon}" Text="&#xE715;" />
+                                    <Grid>
+                                        <TextBlock x:Name="EmailPlaceholder" Style="{StaticResource InputPlaceholder}" Text="Adresse e-mail" />
+                                        <TextBox x:Name="EmailBox" Style="{StaticResource InputText}" TextChanged="EmailBox_TextChanged" />
+                                    </Grid>                                </DockPanel>
+                            </Border>
+
+                            <!-- Mot de passe -->
+                            <Border Style="{StaticResource InputFrame}" Margin="0,14,0,0">
+                                <DockPanel>
+                                    <TextBlock Style="{StaticResource InputIcon}" Text="&#xE72E;" />
+                                    <!-- Bouton œil : affiche ou masque le mot de passe -->
+                                    <Button x:Name="TogglePasswordButton" DockPanel.Dock="Right" Style="{StaticResource InputIconButton}"
+                                            Content="&#xE7B3;" Click="TogglePasswordButton_Click" />
+                                    <!-- Deux champs superposés : un seul est visible à la fois -->
+                                    <Grid>
+                                        <TextBlock x:Name="PasswordPlaceholder" Style="{StaticResource InputPlaceholder}" Text="Mot de passe" />
+                                        <PasswordBox x:Name="PasswordBox" Style="{StaticResource InputPassword}" PasswordChanged="PasswordBox_PasswordChanged" />
+                                        <TextBox x:Name="PasswordVisibleBox" Style="{StaticResource InputText}" Visibility="Collapsed"
+                                                 TextChanged="PasswordVisibleBox_TextChanged" />
+                                    </Grid>
+                                </DockPanel>
+                            </Border>
+
+                            <!-- Se souvenir de moi / Mot de passe oublié -->
+                            <DockPanel x:Name="OptionsRow" Margin="4,14,4,0">
+                                <!-- TODO : case affichée mais pas encore câblée -->
+                                <CheckBox x:Name="RememberMeBox" VerticalContentAlignment="Center">
+                                    <TextBlock Text="Se souvenir de moi" FontSize="12" Foreground="{StaticResource MutedTextBrush}" />
+                                </CheckBox>
+                                <Button x:Name="ForgotPasswordLink" Style="{StaticResource LinkButton}" Content="Mot de passe oublié ?"
+                                        FontSize="12" HorizontalAlignment="Right" VerticalAlignment="Center" Click="ForgotPasswordLink_Click" />
+                            </DockPanel>
+
+                            <!-- Message d'erreur, vide tant qu'il n'y a pas d'erreur -->
+                            <TextBlock x:Name="ErrorText" Foreground="{StaticResource ErrorBrush}" FontSize="13"
+                                       TextWrapping="Wrap" TextAlignment="Center" Margin="0,18,0,0" />
+
+                            <!-- IsDefault : la touche Entrée déclenche ce bouton -->
+                            <Button x:Name="LoginButton" Style="{StaticResource PrimaryButton}" Content="Se connecter" Margin="0,14,0,0"
+                                    IsDefault="True" Click="LoginButton_Click" />
+                            
+                            <!-- Création de compte -->
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,20,0,0">
+                                <TextBlock x:Name="SwitchModeText" Text="Pas encore de compte ? " FontSize="13" Foreground="{StaticResource MutedTextBrush}" />
+                                <Button x:Name="CreateAccountLink" Style="{StaticResource LinkButton}" Content="Créer un compte" Click="CreateAccountLink_Click" />
+                            </StackPanel>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+            </Viewbox>
+        </Grid>
+    </Grid>
+</UserControl>

@@ -1,0 +1,47 @@
+﻿<UserControl x:Class="CineDoors.App.Views.ShellView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <!-- Barre de navigation : largeur fixe. Zone d'écran : tout le reste. -->
+            <ColumnDefinition Width="190" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <!-- ================= Barre de navigation ================= -->
+        <Border Grid.Column="0" Background="{StaticResource SurfaceBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,1,0">
+            <DockPanel Margin="10,0">
+
+                <!-- Nom de l'application -->
+                <TextBlock DockPanel.Dock="Top" Text="CineDoors" FontSize="22" FontWeight="SemiBold" HorizontalAlignment="Center"
+                           Foreground="{StaticResource AccentTextBrush}" Margin="0,34,0,30" />
+
+                <!-- Utilisateur connecté, en bas -->
+                <DockPanel DockPanel.Dock="Bottom" Margin="6,0,2,18">
+                    <!-- Bouton de déconnexion -->
+                    <Button x:Name="LogoutButton" DockPanel.Dock="Right" Style="{StaticResource InputIconButton}" Content="&#xE7E8;"
+                            ToolTip="Se déconnecter" Click="LogoutButton_Click" />
+                    <!-- Pastille ronde avec l'initiale du pseudo -->
+                    <Border Width="34" Height="34" CornerRadius="17" Background="{StaticResource AccentBrush}">
+                        <TextBlock x:Name="UserInitialText" FontSize="15" FontWeight="SemiBold" Foreground="White"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Border>
+                    <TextBlock x:Name="UsernameText" Margin="10,0,0,0" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
+                </DockPanel>
+
+                <!-- Les écrans. Checked est déclenché quand un bouton devient l'écran actif. -->
+                <StackPanel>
+                    <RadioButton x:Name="HomeButton" Style="{StaticResource NavButton}" Content="Accueil" Tag="&#xE80F;" Checked="NavButton_Checked" />
+                    <RadioButton x:Name="SearchButton" Style="{StaticResource NavButton}" Content="Recherche" Tag="&#xE721;" Checked="NavButton_Checked" />
+                    <RadioButton x:Name="MoviesButton" Style="{StaticResource NavButton}" Content="Films" Tag="&#xE8B2;" Checked="NavButton_Checked" />
+                    <RadioButton x:Name="SeriesButton" Style="{StaticResource NavButton}" Content="Séries" Tag="&#xE7F4;" Checked="NavButton_Checked" />
+                    <RadioButton x:Name="UpcomingButton" Style="{StaticResource NavButton}" Content="À venir" Tag="&#xE787;" Checked="NavButton_Checked" />
+                </StackPanel>
+            </DockPanel>
+        </Border>
+
+        <!-- ================= Zone d'écran : l'écran choisi dans la barre s'affiche ici ================= -->
+        <ContentControl x:Name="PageHost" Grid.Column="1" />
+    </Grid>
+</UserControl>

@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\CineDoors.Core\CineDoors.Core.csproj" />
+    <ProjectReference Include="..\CineDoors.Infrastructure\CineDoors.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+	<ItemGroup>
+		<!-- Les affiches du dossier img (à la racine du dépôt) sont copiées à côté de l'application, dans un dossier Posters -->
+		<Content Include="..\..\img\*" Link="Posters\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+	</ItemGroup>
+	
+</Project>

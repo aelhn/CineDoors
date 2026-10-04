@@ -1,0 +1,10 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/CineDoors.App/CineDoors.App.csproj" />
+    <Project Path="src/CineDoors.Core/CineDoors.Core.csproj" />
+    <Project Path="src/CineDoors.Infrastructure/CineDoors.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/CineDoors.Tests/CineDoors.Tests.csproj" />
+  </Folder>
+</Solution>
