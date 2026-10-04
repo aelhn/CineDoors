@@ -43,6 +43,9 @@ jobs:
       - name: Installer l'outil des migrations
         run: dotnet tool install --global dotnet-ef
 
+      - name: Télécharger les paquets NuGet
+        run: dotnet restore tests/CineDoors.Tests
+
       - name: Créer les tables
         run: dotnet ef database update -p src/CineDoors.Infrastructure -s src/CineDoors.Infrastructure
 

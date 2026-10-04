@@ -6,6 +6,8 @@
   </picture>
 </p>
 
+---
+
 Application de bureau Windows pour suivre ses films et ses séries, à la manière de TV Time : un compte, des listes « à voir » et « vus », le temps passé devant l'écran et les sorties à venir.
 
 Projet personnel réalisé pour apprendre le C#, l'écosystème .NET et Visual Studio, avec une base de données PostgreSQL sous Docker.
