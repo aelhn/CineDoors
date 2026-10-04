@@ -11,6 +11,8 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
+    <!-- Icône de l'application : fichier .exe, barre des tâches et fenêtres -->
+    <ApplicationIcon>Assets\cinedoors.ico</ApplicationIcon>
   </PropertyGroup>
 
 	<ItemGroup>
