@@ -1,4 +1,10 @@
-<h1 align="center">CineDoors</h1>
+<!-- Logo : la version aux lettres claires s'affiche en thème sombre, l'autre en thème clair -->
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="screenshots/logo-theme-sombre.png">
+    <img src="screenshots/logo-theme-clair.png" alt="CineDoors" width="460">
+  </picture>
+</p>
 
 Application de bureau Windows pour suivre ses films et ses séries, à la manière de TV Time : un compte, des listes « à voir » et « vus », le temps passé devant l'écran et les sorties à venir.
 
