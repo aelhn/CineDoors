@@ -1,7 +1,8 @@
 ﻿using CineDoors.Core.Entities;
-using CineDoors.Infrastructure.Tmdb;
 using System.Globalization;
 using System.Text.Json;
+
+namespace CineDoors.Infrastructure.Tmdb;
 
 // Interroge l'API de TMDB (catalogue de films) et convertit ses réponses en entités Movie.
 public class TmdbClient
@@ -40,6 +41,23 @@ public class TmdbClient
         // Tri par date de sortie décroissante.
         return movies.OrderByDescending(m => m.ReleaseDate).ToList();
     }
+
+
+
+    // Récupération de la durée d'un film en minutes. TMDB ne la donne pas donc on la calcule via la fiche du film. Renvoie null si la durée n'est pas connue.
+    public async Task<int?> GetRuntimeAsync(int tmdbId)
+    {
+        string json = await _http.GetStringAsync("movie/" + tmdbId + "?language=fr-FR");
+        TmdbMovieDetailsResponse? response = JsonSerializer.Deserialize<TmdbMovieDetailsResponse>(json, _jsonOptions);
+
+        // TMDB Renvoie 0 si durée inconnue, donc forcer le null
+        if (response ==null || response.Runtime == 0)
+        {
+            return null;
+        }
+        return response.Runtime;
+    }
+
 
     // Convertit le JSON d'une liste de films en entités Movie.
     // Méthode séparée et publique pour pouvoir la tester sans appeler TMDB.

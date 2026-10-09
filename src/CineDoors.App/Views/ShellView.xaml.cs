@@ -2,6 +2,8 @@
 using System.Windows;
 using System.Windows.Controls;
 using CineDoors.Core.Entities;
+using CineDoors.Infrastructure.Services;
+using CineDoors.Infrastructure.Tmdb;
 
 namespace CineDoors.App.Views;
 
@@ -12,14 +14,16 @@ public partial class ShellView : UserControl // UserControl désigne une fenêtr
     private readonly AppUser _user;
     private readonly MainWindow _mainWindow;
     private readonly TmdbClient _tmdbClient;
+    private readonly MovieService _movieService;
 
-    public ShellView(AppUser user, MainWindow mainWindow, TmdbClient tmdbClient)
+    public ShellView(AppUser user, MainWindow mainWindow, TmdbClient tmdbClient, MovieService movieService)
     {
         InitializeComponent();
 
         _user = user;
         _mainWindow = mainWindow;
         _tmdbClient = tmdbClient;
+        _movieService = movieService;
 
         // Affiché en bas à gauche (partie compte utilisateur)
         UsernameText.Text = user.Username;
@@ -37,7 +41,7 @@ public partial class ShellView : UserControl // UserControl désigne une fenêtr
         // Accueil : le vrai écran
         if (button == HomeButton)
         {
-            PageHost.Content = new HomeView(_tmdbClient);
+            PageHost.Content = new HomeView(_tmdbClient, _movieService, _user);
             return;
         }
 

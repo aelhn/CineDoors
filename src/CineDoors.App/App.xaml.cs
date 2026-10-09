@@ -28,6 +28,7 @@ public partial class App : Application
         CineDoorsDbContext context = new
         CineDoorsDbContextFactory().CreateDbContext([]);
         AccountService accountService = new AccountService(context, new PasswordHasher());
+        MovieService movieService = new MovieService(context);
 
         // Client HTTP réglé pour TMDB : adresse de l'API, et jeton d'accès envoyé avec chaque requête (Sans jeton, l'application démarre quand même : seul l'accueil affichera une erreur).
         HttpClient http = new HttpClient();
@@ -36,7 +37,7 @@ public partial class App : Application
         http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tmdbToken);
         TmdbClient tmdbClient = new TmdbClient(http);
 
-        MainWindow window = new MainWindow(accountService, tmdbClient);
+        MainWindow window = new MainWindow(accountService, tmdbClient, movieService);
         
         window.Show();
     }

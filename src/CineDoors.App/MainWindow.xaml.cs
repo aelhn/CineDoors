@@ -12,12 +12,14 @@ public partial class MainWindow : Window
 {
     private readonly AccountService _accountService;
     private readonly TmdbClient _tmdbClient;
-    public MainWindow(AccountService accountService, TmdbClient tmdbClient)
+    private readonly MovieService _movieService;
+    public MainWindow(AccountService accountService, TmdbClient tmdbClient, MovieService movieService)
     {
         InitializeComponent();
 
         _accountService = accountService;
         _tmdbClient = tmdbClient;
+        _movieService = movieService;
 
         ShowLogin(); // Premier écran affiché, connexion
     }
@@ -32,7 +34,7 @@ public partial class MainWindow : Window
 
     public void ShowHome(AppUser user) // Ecran principal
     {
-        ScreenHost.Content = new ShellView(user, this, _tmdbClient);
+        ScreenHost.Content = new ShellView(user, this, _tmdbClient, _movieService);
     }
 
 

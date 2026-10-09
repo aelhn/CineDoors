@@ -247,5 +247,60 @@
                 </Setter.Value>
             </Setter>
         </Style>
+
+        <!-- ===== Bouton posé sur une affiche ("+" pour à voir, coche pour vu) =====
+             Au repos : un rond avec une icône. Au survol : il s'allonge vers la gauche et affiche son libellé.
+             Content = le code de l'icône, Tag = le libellé. -->
+        <Style x:Key="CardButton" TargetType="Button">
+            <Setter Property="Height" Value="30" />
+            <Setter Property="HorizontalAlignment" Value="Right" />
+            <!-- Fond sombre presque opaque, pour rester lisible sur n'importe quelle affiche -->
+            <Setter Property="Background" Value="#D91C201E" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Focusable" Value="False" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="15">
+                            <StackPanel Orientation="Horizontal">
+                                <!-- Libellé : largeur nulle au repos, donc invisible. L'animation l'élargit au survol. -->
+                                <TextBlock x:Name="Label" Text="{TemplateBinding Tag}" FontFamily="Segoe UI" FontSize="12" FontWeight="SemiBold"
+                                           Foreground="White" VerticalAlignment="Center" Padding="12,0,0,0" MaxWidth="0" />
+                                <!-- Icône : toujours visible, dans un carré de 30 qui garde le bouton rond au repos -->
+                                <TextBlock Text="{TemplateBinding Content}" FontFamily="Segoe MDL2 Assets" FontSize="12" Foreground="White"
+                                           Width="30" TextAlignment="Center" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <!-- La souris arrive : le libellé s'élargit en 0,15 s -->
+                                <Trigger.EnterActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="Label" Storyboard.TargetProperty="MaxWidth"
+                                                             To="70" Duration="0:0:0.15" />
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </Trigger.EnterActions>
+                                <!-- La souris repart : il se referme -->
+                                <Trigger.ExitActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="Label" Storyboard.TargetProperty="MaxWidth"
+                                                             To="0" Duration="0:0:0.15" />
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </Trigger.ExitActions>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#F2343A36" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
     </Application.Resources>
 </Application>

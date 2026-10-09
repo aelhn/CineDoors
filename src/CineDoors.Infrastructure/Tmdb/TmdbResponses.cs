@@ -30,6 +30,12 @@ public class TmdbGenreListResponse
     public List<TmdbGenre> Genres { get; set; } = new List<TmdbGenre>();
 }
 
+// Réponse de "movie/{id}" (fiche détaillée d'un film). On n'en lit que la durée, en minutes (pour le récap du temps)
+public class TmdbMovieDetailsResponse
+{
+    public int? Runtime {  get; set; }
+}
+
 public class TmdbGenre
 {
     public int Id { get; set; }

@@ -31,14 +31,48 @@
                     <DataTemplate>
                         <StackPanel Width="170" Margin="0,0,16,22">
 
-                            <!-- Affiche au format 2:3. Le fond gris se voit tant que l'image charge, ou s'il n'y en a pas. -->
-                            <Border Width="170" Height="255" CornerRadius="8" Background="{StaticResource InputBrush}">
-                                <Border CornerRadius="8">
-                                    <Border.Background>
-                                        <ImageBrush ImageSource="{Binding PosterUrl}" Stretch="UniformToFill" />
-                                    </Border.Background>
+                            <!-- Affiche et boutons superposés dans une même case -->
+                            <Grid Width="170" Height="255">
+
+                                <!-- Affiche au format 2:3. Le fond gris se voit tant que l'image charge, ou s'il n'y en a pas. -->
+                                <Border CornerRadius="8" Background="{StaticResource InputBrush}">
+                                    <Border CornerRadius="8">
+                                        <Border.Background>
+                                            <ImageBrush ImageSource="{Binding PosterUrl}" Stretch="UniformToFill" />
+                                        </Border.Background>
+                                    </Border>
                                 </Border>
-                            </Border>
+
+                                <!-- Les deux boutons, empilés en bas à droite de l'affiche -->
+                                <StackPanel HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="8">
+
+                                    <!-- "+" : liste à voir. Devient vert quand le film y est (IsToWatch vaut vrai). -->
+                                    <Button Content="&#xE710;" Tag="À voir" Click="ToWatchButton_Click">
+                                        <Button.Style>
+                                            <Style TargetType="Button" BasedOn="{StaticResource CardButton}">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsToWatch}" Value="True">
+                                                        <Setter Property="Background" Value="{StaticResource AccentBrush}" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Button.Style>
+                                    </Button>
+
+                                    <!-- Coche : film vu. Devient verte quand IsWatched vaut vrai. -->
+                                    <Button Content="&#xE73E;" Tag="Vu" Margin="0,6,0,0" Click="WatchedButton_Click">
+                                        <Button.Style>
+                                            <Style TargetType="Button" BasedOn="{StaticResource CardButton}">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsWatched}" Value="True">
+                                                        <Setter Property="Background" Value="{StaticResource AccentBrush}" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Button.Style>
+                                    </Button>
+                                </StackPanel>
+                            </Grid>
 
                             <TextBlock Text="{Binding Title}" FontSize="14" FontWeight="SemiBold" Margin="2,8,0,0"
                                        TextTrimming="CharacterEllipsis" ToolTip="{Binding Title}" />
