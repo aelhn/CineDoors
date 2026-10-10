@@ -1,5 +1,6 @@
 ﻿using CineDoors.Core.Entities;
 using CineDoors.Infrastructure.Data;
+using CineDoors.Core;
 using Microsoft.EntityFrameworkCore;
 using System.Runtime.ConstrainedExecution;
 
@@ -84,6 +85,22 @@ public class MovieService
 
         _context.MovieTrackings.Remove(tracking);
         await _context.SaveChangesAsync();
+    }
+
+    // Chiffres du profil : films vus, films à voir et temps total de visionnage
+    public async Task<MovieStats> GetStatsAsync(int userId) // Enregistre des infos dans stats. via requêtes SQL
+    {
+        IQueryable<MovieTracking> trackings = _context.MovieTrackings.Where(t =>  t.UserId == userId);
+        IQueryable<MovieTracking> watched = trackings.Where(t =>  t.Status == MovieStatus.Watched);
+        MovieStats stats = new MovieStats();
+
+        // On garde dans stats. les résultats de requêtes SQL. Les opérations de calcul sont faites par PostgreSQL 
+        stats.WatchedCount = await watched.CountAsync();
+        stats.ToWatchCount = await trackings.CountAsync(t => t.Status == MovieStatus.ToWatch); // Equivaut à un count(*)
+        stats.TotalMinutes = await watched.SumAsync(t => t.Movie!.RuntimeMinutes ?? 0); // "?? 0" précise que, si la durée est nulle, on la remplace par 0
+        stats.UnknowRuntimeCount = await watched.CountAsync(t => t.Movie!.RuntimeMinutes == null); // On compte, parmi les films vus, ceux dont on ne connait pas la durée
+
+        return stats;
     }
 
     // Le suivi pointe vers un film, donc on enregistre ce film de notre côté s'il est inconnu dans notre base.

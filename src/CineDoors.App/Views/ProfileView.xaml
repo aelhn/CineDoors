@@ -1,0 +1,78 @@
+﻿<UserControl x:Class="CineDoors.App.Views.ProfileView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Loaded="ProfileView_Loaded">
+
+    <UserControl.Resources>
+        <!-- Une tuile de chiffre : cadre arrondi, utilisé pour chaque compteur -->
+        <Style x:Key="StatTile" TargetType="Border">
+            <Setter Property="Background" Value="{StaticResource SurfaceBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="12" />
+            <Setter Property="Padding" Value="22,18" />
+            <Setter Property="Margin" Value="0,0,16,16" />
+            <Setter Property="MinWidth" Value="200" />
+        </Style>
+        <!-- Le petit titre gris en haut d'une tuile -->
+        <Style x:Key="StatLabel" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{StaticResource MutedTextBrush}" />
+            <Setter Property="FontSize" Value="13" />
+        </Style>
+        <!-- Le grand chiffre d'une tuile -->
+        <Style x:Key="StatValue" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
+            <Setter Property="FontSize" Value="30" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Margin" Value="0,6,0,0" />
+        </Style>
+    </UserControl.Resources>
+
+    <StackPanel Margin="26,34,26,0">
+
+        <!-- En-tête : pastille et pseudo -->
+        <StackPanel Orientation="Horizontal" Margin="0,0,0,26">
+            <Border Width="56" Height="56" CornerRadius="28" Background="{StaticResource AccentBrush}">
+                <TextBlock x:Name="InitialText" FontSize="24" FontWeight="SemiBold" Foreground="White"
+                           HorizontalAlignment="Center" VerticalAlignment="Center" />
+            </Border>
+            <StackPanel Margin="16,0,0,0" VerticalAlignment="Center">
+                <TextBlock x:Name="UsernameText" FontSize="26" FontWeight="SemiBold" />
+                <TextBlock x:Name="MemberSinceText" Style="{StaticResource StatLabel}" Margin="0,2,0,0" />
+            </StackPanel>
+        </StackPanel>
+
+        <TextBlock Text="Films" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,12" />
+
+        <!-- Message de chargement ou d'erreur -->
+        <TextBlock x:Name="StatusText" Text="Chargement..." Foreground="{StaticResource MutedTextBrush}" TextWrapping="Wrap" />
+
+        <!-- Les tuiles, masquées tant que les chiffres ne sont pas chargés -->
+        <WrapPanel x:Name="TilesPanel" Visibility="Collapsed">
+
+            <Border Style="{StaticResource StatTile}">
+                <StackPanel>
+                    <TextBlock Style="{StaticResource StatLabel}" Text="Temps de visionnage" />
+                    <TextBlock x:Name="WatchTimeText" Style="{StaticResource StatValue}" Foreground="{StaticResource AccentTextBrush}" />
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource StatTile}">
+                <StackPanel>
+                    <TextBlock Style="{StaticResource StatLabel}" Text="Films vus" />
+                    <TextBlock x:Name="WatchedCountText" Style="{StaticResource StatValue}" />
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource StatTile}">
+                <StackPanel>
+                    <TextBlock Style="{StaticResource StatLabel}" Text="Films à voir" />
+                    <TextBlock x:Name="ToWatchCountText" Style="{StaticResource StatValue}" />
+                </StackPanel>
+            </Border>
+        </WrapPanel>
+
+        <!-- Signale les films vus sans durée connue (règle RG18). Masqué s'il n'y en a pas. -->
+        <TextBlock x:Name="UnknownRuntimeText" Style="{StaticResource StatLabel}" Visibility="Collapsed" TextWrapping="Wrap" />
+    </StackPanel>
+</UserControl>

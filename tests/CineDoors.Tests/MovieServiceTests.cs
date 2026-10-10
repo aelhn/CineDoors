@@ -1,4 +1,5 @@
 ﻿using CineDoors.Core.Entities;
+using CineDoors.Core;
 using CineDoors.Infrastructure.Data;
 using CineDoors.Infrastructure.Security;
 using CineDoors.Infrastructure.Services;
@@ -49,6 +50,42 @@ public class MovieServiceTests
         // --- Nettoyage ---
         context.Movies.Remove(movie);
         context.Users.Remove(user);
+        await context.SaveChangesAsync();
+    }
+
+    [Fact]
+    public async Task Stats_ComptentLesFilmsEtLeTemps()
+    {
+        CineDoorsDbContext context = new CineDoorsDbContextFactory().CreateDbContext([]);
+        AccountService accountService = new AccountService(context, new PasswordHasher());
+        MovieService movieService = new MovieService(context);
+
+        string username = "test_" + Guid.NewGuid().ToString("N").Substring(0, 12);
+        await accountService.RegisterAsync(username, username + "@exemple.fr", "motdepasse123");
+        AppUser? user = await accountService.LoginAsync(username, "motdepasse123");
+        Assert.NotNull(user);
+
+        // Trois films : deux vus (dont un sans durée connue) et un à voir
+        int baseId = -Random.Shared.Next(1000, 1000000);
+        Movie seen = new Movie { TmdbId = baseId, Title = "Vu, 100 min", RuntimeMinutes = 100 };
+        Movie seenNoRuntime = new Movie { TmdbId = baseId - 1, Title = "Vu, durée inconnue" };
+        Movie toWatch = new Movie { TmdbId = baseId - 2, Title = "A voir, 90 min", RuntimeMinutes = 90 };
+
+        await movieService.SetStatusAsync(user.Id, seen, MovieStatus.Watched);
+        await movieService.SetStatusAsync(user.Id, seenNoRuntime, MovieStatus.Watched);
+        await movieService.SetStatusAsync(user.Id, toWatch, MovieStatus.ToWatch);
+
+        MovieStats stats = await movieService.GetStatsAsync(user.Id);
+
+        Assert.Equal(2, stats.WatchedCount);
+        Assert.Equal(1, stats.ToWatchCount);
+        // Seul le film vu avec une durée compte : le film "à voir" et celui sans durée n'ajoutent rien
+        Assert.Equal(100, stats.TotalMinutes);
+        Assert.Equal(1, stats.UnknowRuntimeCount);
+
+        // --- Nettoyage (supprimer l'utilisateur supprime aussi ses suivis) ---
+        context.Users.Remove(user);
+        context.Movies.RemoveRange(seen, seenNoRuntime, toWatch);
         await context.SaveChangesAsync();
     }
 }

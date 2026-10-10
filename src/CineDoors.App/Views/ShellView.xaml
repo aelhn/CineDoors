@@ -22,12 +22,26 @@
                     <!-- Bouton de déconnexion -->
                     <Button x:Name="LogoutButton" DockPanel.Dock="Right" Style="{StaticResource InputIconButton}" Content="&#xE7E8;"
                             ToolTip="Se déconnecter" Click="LogoutButton_Click" />
-                    <!-- Pastille ronde avec l'initiale du pseudo -->
-                    <Border Width="34" Height="34" CornerRadius="17" Background="{StaticResource AccentBrush}">
-                        <TextBlock x:Name="UserInitialText" FontSize="15" FontWeight="SemiBold" Foreground="White"
-                                   HorizontalAlignment="Center" VerticalAlignment="Center" />
-                    </Border>
-                    <TextBlock x:Name="UsernameText" Margin="10,0,0,0" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
+                    <!-- Pastille et pseudo : un bouton qui ouvre le profil -->
+                    <Button x:Name="ProfileButton" Cursor="Hand" ToolTip="Voir mon profil" FocusVisualStyle="{x:Null}"
+                            Click="ProfileButton_Click">
+                        <!-- Modèle minimal : le bouton n'a pas de cadre, il se réduit à son contenu -->
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border Background="Transparent">
+                                    <ContentPresenter />
+                                </Border>
+                            </ControlTemplate>
+                        </Button.Template>
+                        <DockPanel>
+                            <!-- Pastille ronde avec l'initiale du pseudo -->
+                            <Border Width="34" Height="34" CornerRadius="17" Background="{StaticResource AccentBrush}">
+                                <TextBlock x:Name="UserInitialText" FontSize="15" FontWeight="SemiBold" Foreground="White"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </Border>
+                            <TextBlock x:Name="UsernameText" Margin="10,0,0,0" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
+                        </DockPanel>
+                    </Button>
                 </DockPanel>
 
                 <!-- Les écrans. Checked est déclenché quand un bouton devient l'écran actif. -->

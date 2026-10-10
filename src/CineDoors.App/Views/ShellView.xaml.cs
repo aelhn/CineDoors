@@ -55,6 +55,19 @@ public partial class ShellView : UserControl // UserControl désigne une fenêtr
         PageHost.Content = placeholder;
     }
 
+    // Clic sur la pastille ou le pseudo (Affiche le profil)
+    private void ProfileButton_Click(object sender, RoutedEventArgs e)
+    {
+        // Ne concerne pas les boutons de la barre, on les décoche tous pour qu'aucun ne reste affiché en vert comme écran actif
+        HomeButton.IsChecked = false;
+        SearchButton.IsChecked = false;
+        MoviesButton.IsChecked = false;
+        SeriesButton.IsChecked = false;
+        UpcomingButton.IsChecked = false;
+
+        PageHost.Content = new ProfileView(_movieService, _user);
+    }
+
     private void LogoutButton_Click(object sender, RoutedEventArgs e) // Si appui sur btn déconnexion
     {
         _mainWindow.ShowLogin(); // Retour à l'écran de connexion
