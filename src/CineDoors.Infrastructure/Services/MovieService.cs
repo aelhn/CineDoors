@@ -98,7 +98,7 @@ public class MovieService
         stats.WatchedCount = await watched.CountAsync();
         stats.ToWatchCount = await trackings.CountAsync(t => t.Status == MovieStatus.ToWatch); // Equivaut à un count(*)
         stats.TotalMinutes = await watched.SumAsync(t => t.Movie!.RuntimeMinutes ?? 0); // "?? 0" précise que, si la durée est nulle, on la remplace par 0
-        stats.UnknowRuntimeCount = await watched.CountAsync(t => t.Movie!.RuntimeMinutes == null); // On compte, parmi les films vus, ceux dont on ne connait pas la durée
+        stats.UnknownRuntimeCount = await watched.CountAsync(t => t.Movie!.RuntimeMinutes == null); // On compte, parmi les films vus, ceux dont on ne connait pas la durée
 
         return stats;
     }

@@ -81,7 +81,7 @@ public class MovieServiceTests
         Assert.Equal(1, stats.ToWatchCount);
         // Seul le film vu avec une durée compte : le film "à voir" et celui sans durée n'ajoutent rien
         Assert.Equal(100, stats.TotalMinutes);
-        Assert.Equal(1, stats.UnknowRuntimeCount);
+        Assert.Equal(1, stats.UnknownRuntimeCount);
 
         // --- Nettoyage (supprimer l'utilisateur supprime aussi ses suivis) ---
         context.Users.Remove(user);

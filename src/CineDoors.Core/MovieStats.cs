@@ -13,5 +13,5 @@ public class MovieStats
     public int TotalMinutes { get; set; }
 
     // Films vus dont la durée est inconnue (ne comptent pas dans le total)
-    public int UnknowRuntimeCount { get; set; }
+    public int UnknownRuntimeCount { get; set; }
 }

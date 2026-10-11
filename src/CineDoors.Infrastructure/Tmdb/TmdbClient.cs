@@ -21,6 +21,9 @@ public class TmdbClient
     // Noms des genres par identifiant (28 -> "Action"). Chargé une seule fois, au premier besoin.
     private Dictionary<int, string>? _genreNames;
 
+    // Durées déjà demandées à TMDB (id du film -> durée). Evite de redemander la même à chaque retour sur l'accueil.
+    private readonly Dictionary<int, int?> _runtimes = new Dictionary<int, int?>();
+
     // HttpClient est fourni déjà configuré (adresse de l'API, jeton d'accès) par App.xaml.cs.
     public TmdbClient(HttpClient http)
     {
@@ -47,15 +50,25 @@ public class TmdbClient
     // Récupération de la durée d'un film en minutes. TMDB ne la donne pas donc on la calcule via la fiche du film. Renvoie null si la durée n'est pas connue.
     public async Task<int?> GetRuntimeAsync(int tmdbId)
     {
+        // Déjà demandée : on renvoie la valeur gardée en mémoire, sans appel réseau
+        if (_runtimes.TryGetValue(tmdbId, out int? knownRuntime))
+        {
+            return knownRuntime;
+        }
+
         string json = await _http.GetStringAsync("movie/" + tmdbId + "?language=fr-FR");
         TmdbMovieDetailsResponse? response = JsonSerializer.Deserialize<TmdbMovieDetailsResponse>(json, _jsonOptions);
 
         // TMDB Renvoie 0 si durée inconnue, donc forcer le null
-        if (response ==null || response.Runtime == 0)
+        int? runtime = null;
+
+        if (response != null && response.Runtime != 0)
         {
-            return null;
+            runtime = response.Runtime;
         }
-        return response.Runtime;
+
+        _runtimes[tmdbId] = runtime;
+        return runtime;
     }
 
 

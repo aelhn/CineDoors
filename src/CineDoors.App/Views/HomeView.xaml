@@ -29,10 +29,10 @@
                 <!-- Modèle d'une carte. {Binding X} affiche la propriété X de l'objet MovieCard. -->
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <StackPanel Width="170" Margin="0,0,16,22">
+                        <StackPanel Width="190" Margin="0,0,16,22">
 
                             <!-- Affiche et boutons superposés dans une même case -->
-                            <Grid Width="170" Height="255">
+                            <Grid Width="190" Height="285">
 
                                 <!-- Affiche au format 2:3. Le fond gris se voit tant que l'image charge, ou s'il n'y en a pas. -->
                                 <Border CornerRadius="8" Background="{StaticResource InputBrush}">
@@ -76,7 +76,7 @@
 
                             <TextBlock Text="{Binding Title}" FontSize="14" FontWeight="SemiBold" Margin="2,8,0,0"
                                        TextTrimming="CharacterEllipsis" ToolTip="{Binding Title}" />
-                            <TextBlock Text="{Binding Subtitle}" FontSize="12" Foreground="{StaticResource MutedTextBrush}" Margin="2,2,0,0"
+                            <TextBlock Text="{Binding Subtitle}" ToolTip="{Binding Subtitle}" FontSize="12" Foreground="{StaticResource MutedTextBrush}" Margin="2,2,0,0"
                                        TextTrimming="CharacterEllipsis" />
                         </StackPanel>
                     </DataTemplate>

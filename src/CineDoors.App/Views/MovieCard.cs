@@ -11,7 +11,17 @@ public class MovieCard : INotifyPropertyChanged // Déclaration WPF permettant d
     public required string Title { get; set; }
 
     // Ligne sous le titre, ex. "30 sept. 2026 · Science-Fiction"
-    public required string Subtitle { get; set; }
+    // Elle change après l'affichage (la durée arrive ensuite) : comme pour IsToWatch, le "set" prévient l'écran.
+    private string _subtitle = "";
+    public required string Subtitle
+    {
+        get { return _subtitle; }
+        set
+        {
+            _subtitle = value;
+            OnPropertyChanged(nameof(Subtitle));
+        }
+    }
 
     // Adresse complète de l'affiche. null si le film n'en a pas.
     public string? PosterUrl { get; set; }

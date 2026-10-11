@@ -16,18 +16,22 @@ Projet personnel réalisé pour apprendre le C#, l'écosystème .NET et Visual S
 
 ![Accueil : les dernières sorties de films](screenshots/accueil.jpg)
 
+![Profil : les compteurs de visionnage](screenshots/profil.jpg)
+
 ## Fonctionnalités
 
 Disponibles :
 
 - Création de compte et connexion, avec mots de passe hachés (PBKDF2, sel par compte).
 - Accueil avec les dernières sorties de films, chargées depuis l'API TMDB.
+- Suivi des films depuis l'accueil : ajout à la liste « à voir » ou marquage « vu » en un clic, propre à chaque compte.
+- Profil avec le temps de visionnage, le nombre de films vus et le nombre de films à voir, calculés par PostgreSQL.
 - Interface sombre qui s'adapte à la taille de la fenêtre, barre de titre intégrée.
-- Navigation entre les écrans.
+- Tests automatisés et intégration continue (GitHub Actions) à chaque envoi.
 
 En cours de développement :
 
-- Listes de films « à voir » et « vus », compteurs de temps de visionnage.
+- Écran des listes de films « à voir » et « vus ».
 - Recherche dans le catalogue.
 - Séries : suivi par épisode, par saison ou en entier.
 - Sorties à venir et notifications.
@@ -42,7 +46,7 @@ En cours de développement :
 | Base de données | PostgreSQL 17, dans Docker |
 | Accès aux données | EF Core (ORM) avec le pilote Npgsql pour PostgreSQL, migrations versionnées |
 | Catalogue | API REST de TMDB |
-| Tests | xUnit |
+| Tests | xUnit, exécutés par GitHub Actions |
 
 ## Organisation du code
 
@@ -50,8 +54,8 @@ La solution est découpée en quatre projets, pour séparer les règles métier,
 
 | Projet | Rôle |
 |---|---|
-| `CineDoors.Core` | Entités métier. Ne dépend d'aucun autre projet. |
-| `CineDoors.Infrastructure` | Accès à PostgreSQL (EF Core), client TMDB, hachage des mots de passe, service de compte. |
+| `CineDoors.Core` | Entités et règles métier. Ne dépend d'aucun autre projet. |
+| `CineDoors.Infrastructure` | Accès à PostgreSQL (EF Core), client TMDB, hachage des mots de passe, services de compte et de suivi des films. |
 | `CineDoors.App` | Application WPF : fenêtre, écrans, thème. |
 | `CineDoors.Tests` | Tests unitaires et tests d'intégration sur PostgreSQL. |
 

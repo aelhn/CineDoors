@@ -42,9 +42,9 @@ public partial class ProfileView : UserControl
             WatchedCountText.Text = stats.WatchedCount.ToString();
             ToWatchCountText.Text = stats.ToWatchCount.ToString();
 
-            if (stats.UnknowRuntimeCount >0)
+            if (stats.UnknownRuntimeCount >0)
             {
-                UnknownRuntimeText.Text = "Durée inconnue pour " + stats.UnknowRuntimeCount + " film(s) vu(s) : non compté(s) dans le temps de visionnage.";
+                UnknownRuntimeText.Text = "Durée inconnue pour " + stats.UnknownRuntimeCount + " film(s) vu(s) : non compté(s) dans le temps de visionnage.";
                 UnknownRuntimeText.Visibility = Visibility.Visible;
             }
 

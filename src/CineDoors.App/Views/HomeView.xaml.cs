@@ -67,10 +67,36 @@ public partial class HomeView : UserControl
             // On donne la liste à la grille : WPF crée une carte à l'écran pour chaque élément.
             MoviesList.ItemsSource = cards;
             StatusText.Visibility = Visibility.Collapsed;
+
+            // La grille est affichée : on complète ensuite les cartes avec la durée de chaque film
+            await LoadRuntimesAsync(cards);
         }
         catch (Exception)
         {
             StatusText.Text = "Impossible de charger les films. Vérifiez la connexion Internet et le jeton TMDB (variable CINEDOORS_TMDB_TOKEN).";
+        }
+    }
+
+    // Demande à TMDB la durée de chaque film, l'un après l'autre, et met à jour sa carte.
+    // TMDB ne donne pas la durée dans la liste des sorties : il faut une demande par film.
+    private async Task LoadRuntimesAsync(List<MovieCard> cards)
+    {
+        try
+        {
+            foreach (MovieCard card in cards)
+            {
+                if (card.Movie.RuntimeMinutes == null)
+                {
+                    card.Movie.RuntimeMinutes = await _tmdbClient.GetRuntimeAsync(card.Movie.TmdbId);
+                }
+
+                // Changer Subtitle suffit : la carte prévient l'écran, qui réaffiche la ligne
+                card.Subtitle = BuildSubtitle(card.Movie);
+            }
+        }
+        catch (Exception)
+        {
+            // La durée est un plus : si TMDB ne répond pas, les cartes restent affichées sans elle
         }
     }
 
@@ -153,6 +179,14 @@ public partial class HomeView : UserControl
             // "d MMM yyyy" : jour, mois abrégé, année. Préciser "fr-FR" donne le mois en format français.
             // ".Value" lit la date contenue dans le DateOnly? (on vient de vérifier qu'elle n'est pas null).
             parts.Add(movie.ReleaseDate.Value.ToString("d MMM yyyy", new CultureInfo("fr-FR")));
+        }
+
+        if (movie.RuntimeMinutes != null)
+        {
+            // 112 minutes -> "1 h 52". "D2" écrit le nombre sur 2 chiffres : 5 devient "05".
+            int hours = movie.RuntimeMinutes.Value / 60;
+            int minutes = movie.RuntimeMinutes.Value % 60;
+            parts.Add(hours + " h " + minutes.ToString("D2"));
         }
 
         if (movie.Genres != null)
