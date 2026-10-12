@@ -7,6 +7,7 @@ public class Movie // Correspond à la table "movie"
     public required string Title { get; set; } // Titre obligatoire
 
     // "?" autoriste juste une valeur null
+    public DateOnly? ReReleaseDate { get; set; } // Date de retour en salle en France quand réédition. Null pour la première sortie (utilisé pour trier correctement dans la liste les re-sorties)
     public DateOnly? ReleaseDate { get; set; } 
     public int? RuntimeMinutes { get; set; } 
     public string? PosterPath { get; set; } // Affiche

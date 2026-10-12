@@ -15,6 +15,7 @@ public partial class ShellView : UserControl // UserControl désigne une fenêtr
     private readonly MainWindow _mainWindow;
     private readonly TmdbClient _tmdbClient;
     private readonly MovieService _movieService;
+    private HomeView? _homeView; // S'agit de l'écran d'accueil, il est gardé en mémoire pendant la session, null tant qu'il n'a pas été affiché
 
     public ShellView(AppUser user, MainWindow mainWindow, TmdbClient tmdbClient, MovieService movieService)
     {
@@ -41,11 +42,16 @@ public partial class ShellView : UserControl // UserControl désigne une fenêtr
         // Accueil : le vrai écran
         if (button == HomeButton)
         {
-            PageHost.Content = new HomeView(_tmdbClient, _movieService, _user);
+            // Accueil créé une seule fois, puis réutilisé (films de l'accueil chargés pour la session). On garde aussi où l'on est rendus dans le défilement
+            if (_homeView == null)
+            {
+                _homeView = new HomeView(_tmdbClient, _movieService, _user);
+            }
+            PageHost.Content = _homeView;
             return;
         }
 
-        // Ecran provisoire # TODO
+        // Ecran provisoire 
         TextBlock placeholder = new TextBlock();
         placeholder.Text = pageName + " : bientôt disponible";
         placeholder.FontSize = 22;

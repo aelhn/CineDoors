@@ -1,10 +1,14 @@
-﻿namespace CineDoors.Infrastructure.Tmdb;
+﻿using System.Text.Json.Serialization;
+
+namespace CineDoors.Infrastructure.Tmdb;
 
 // Copie de la forme du JSON renvoyé par TMDB. Qu'en lecture 
 
 public class TmdbMovieListResponse
 {
     public List<TmdbMovieResult> Results { get; set; } = new List<TmdbMovieResult>();
+
+    public int TotalPages { get; set; } // TMDB découpe ses pages en 20 films/série chacune ("total_pages" dans le JSON)
 }
 
 // Info d'un film
@@ -40,4 +44,30 @@ public class TmdbGenre
 {
     public int Id { get; set; }
     public string Name { get; set; } = "";
+}
+
+// Réponse de "movie/{id}/release_dates" : toutes les dates de sortie d'un film, pays par pays.
+// { "results": [ { "iso_3166_1": "FR", "release_dates": [ { "release_date": "2026-09-23T00:00:00.000Z", "type": 3 } ] } ] }
+public class TmdbReleaseDatesResponse
+{
+    public List<TmdbCountryReleases> Results { get; set; } = new List<TmdbCountryReleases>();
+}
+
+public class TmdbCountryReleases
+{
+    // Code du pays ("FR"). Le nom JSON contient des chiffres que la conversion automatique
+    // ne sait pas retrouver : on l'indique à la main avec cet attribut.
+    [JsonPropertyName("iso_3166_1")]
+    public string CountryCode { get; set; } = "";
+
+    public List<TmdbReleaseDate> ReleaseDates { get; set; } = new List<TmdbReleaseDate>();
+}
+
+public class TmdbReleaseDate
+{
+    // Date et heure en texte : "2026-09-23T00:00:00.000Z"
+    public string ReleaseDate { get; set; } = "";
+
+    // Type de sortie : 2 et 3 = cinéma, 4 = numérique, 5 = DVD / Blu-ray, 6 = télévision
+    public int Type { get; set; }
 }

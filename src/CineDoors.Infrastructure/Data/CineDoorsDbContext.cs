@@ -32,6 +32,7 @@ public class CineDoorsDbContext : DbContext
 
         // --- Catalogue  ---   
         modelBuilder.Entity<Movie>().ToTable("movie");
+        modelBuilder.Entity<Movie>().Ignore(m => m.ReReleaseDate); // Pas une colonne dédiée, info recalculée à chaque chargement depuis l'API
         modelBuilder.Entity<Movie>().Property(m =>  m.Title).HasMaxLength(300);
         modelBuilder.Entity<Movie>().HasIndex(m => m.TmdbId).IsUnique();         // Un film ne doit être enregistré qu'une seule fois
 

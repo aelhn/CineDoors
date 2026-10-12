@@ -7,6 +7,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
+using System.Collections.ObjectModel;
 
 namespace CineDoors.App.Views;
 
@@ -19,6 +20,18 @@ public partial class HomeView : UserControl
     private readonly AppUser _user ;
 
     private bool _isBusy = false; // Vrai pendant qu'un clic sur une carte est en cours
+
+    private const int BatchSize = 20; // Nb de cartes de film/série ajouté à chaque fois que l'on arrive en bas de la page
+
+    // Tous les films en salle, triés par date. Chargés une fois, puis affichés par batch
+    private List<MovieCard> _allCards = new List<MovieCard>();
+
+    // Cartes réellement affichées.
+    // "ObservableCollection" est une liste qui prévient l'écran quand on lui ajoute un élément, pour qu'elle apparaisse seule plutôt que de tout recréer
+    private readonly ObservableCollection<MovieCard> _visibleCards = new ObservableCollection<MovieCard>();
+
+    // Vrai une fois les films chargés. Vu que écran gardé en mémoire pendant la session, ce bool empêche de tout recharger à chaque retour sur l'accueil (permet de savoir si les films ont déjà été chargés une fois)
+    private bool _isLoaded = false;
 
     public HomeView(TmdbClient tmdbClient, MovieService movieService, AppUser user)
     {
@@ -34,6 +47,13 @@ public partial class HomeView : UserControl
     // On charge les films ici et non dans le constructeur : un constructeur ne peut pas utiliser "await" (charger des films est un appel réseau, on serait alors obligé de freeze l'application entière le temps de).
     private async void HomeView_Loaded(object sender, RoutedEventArgs e)
     {
+        // Loaded se déclenche à chaque fois que l'écran revient à l'affichage, pour qu'on ne charge qu'une seule fois
+        if (_isLoaded)
+        {
+            return;
+        }
+        _isLoaded = true;
+
         try
         {
             List<Movie> movies = await _tmdbClient.GetNowPlayingAsync();
@@ -64,16 +84,58 @@ public partial class HomeView : UserControl
                 cards.Add(card);
             }
 
-            // On donne la liste à la grille : WPF crée une carte à l'écran pour chaque élément.
-            MoviesList.ItemsSource = cards;
+            _allCards = cards;
+
+            // On donne, à la grille, la liste des cartes affichées (vide pour l'instant), puis on y ajoute le premier batch
+            MoviesList.ItemsSource = _visibleCards;
             StatusText.Visibility = Visibility.Collapsed;
 
-            // La grille est affichée : on complète ensuite les cartes avec la durée de chaque film
-            await LoadRuntimesAsync(cards);
+            await ShowNextBatchAsync();
         }
         catch (Exception)
         {
             StatusText.Text = "Impossible de charger les films. Vérifiez la connexion Internet et le jeton TMDB (variable CINEDOORS_TMDB_TOKEN).";
+            // Chargement échoué, donc on réessaiera au prochain affichage de l'écran d'accueil
+            _isLoaded = false;
+        }
+    }
+
+    // Affiche les 20 films suivants (ou le reste si moins), puis récup leur durée en même temps
+    private async Task ShowNextBatchAsync()
+    {
+        // Calcul de où commence et où finit la tranche de films à afficher (0 à 19, 20 à 39, etc...).
+        int start = _visibleCards.Count;
+        int end = Math.Min(start + BatchSize, _allCards.Count);
+
+        List<MovieCard> batch = new List<MovieCard>();
+
+        for (int i = start; i < end; i++)
+        {
+            batch.Add(_allCards[i]);
+            _visibleCards.Add(_allCards[i]);
+        }
+
+        // La grille est affichée : On complète ensuite les cartes avec la durée de chaque film
+        await LoadRuntimesAsync(batch);
+    }
+
+    // Appelé par WPF à chaque mouvement de page (molette/barre défilement/changement de taille)
+    private async void ScrollViewer_ScrollChanged(object sender, ScrollChangedEventArgs e)
+    {
+        // Si tout est déjà affiché, ou rien n'est encore chargé : ne rien faire
+        if (_visibleCards.Count >= _allCards.Count)
+        {
+            return;
+        }
+
+        // "VerticalOffset" indique ce qui est caché au-dessus
+        // "ViewportHeight" indique ce qui est visible
+        // "ExtentHeight" indique la hauteur total. Quand il reste moins de 300 pixels avant le bas, on charge la suite
+        double remaining = e.ExtentHeight - (e.VerticalOffset + e.ViewportHeight);
+
+        if (remaining < 300)
+        {
+            await ShowNextBatchAsync();
         }
     }
 
@@ -178,7 +240,16 @@ public partial class HomeView : UserControl
         {
             // "d MMM yyyy" : jour, mois abrégé, année. Préciser "fr-FR" donne le mois en format français.
             // ".Value" lit la date contenue dans le DateOnly? (on vient de vérifier qu'elle n'est pas null).
-            parts.Add(movie.ReleaseDate.Value.ToString("d MMM yyyy", new CultureInfo("fr-FR")));
+            string dateText = movie.ReleaseDate.Value.ToString("d MMM yyyy", new CultureInfo("fr-FR"));
+
+            // On affiche la date de la première sortie. Pour une ressortie, le film est classé
+            // à sa date de retour en salle : l'astérisque explique pourquoi la date affichée paraît ancienne.
+            if (movie.ReReleaseDate != null)
+            {
+                dateText = dateText + " *";
+            }
+
+            parts.Add(dateText);
         }
 
         if (movie.RuntimeMinutes != null)

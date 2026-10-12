@@ -5,14 +5,17 @@
 
     <DockPanel Margin="26,34,0,0">
 
-        <TextBlock DockPanel.Dock="Top" Text="Dernières sorties" FontSize="30" FontWeight="SemiBold" Margin="0,0,0,18" />
+        <TextBlock DockPanel.Dock="Top" Text="Dernières sorties" FontSize="30" FontWeight="SemiBold" Margin="0,0,0,4" />
 
+        <!-- Légende de l'astérisque affiché à côté de certaines dates -->
+        <TextBlock DockPanel.Dock="Top" Text="* Ressortie en salle : le film est classé à sa date de retour au cinéma, la date affichée est celle de sa première sortie."
+                   FontSize="12" Foreground="{StaticResource MutedTextBrush}" Margin="0,0,0,16" />
         <!-- Message de chargement ou d'erreur. Masqué quand la grille est affichée. -->
         <TextBlock x:Name="StatusText" DockPanel.Dock="Top" Text="Chargement..." Foreground="{StaticResource MutedTextBrush}"
                    TextWrapping="Wrap" Margin="0,0,26,0" />
 
         <!-- La grille défile verticalement quand il y a plus de films que de place -->
-        <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <ScrollViewer VerticalScrollBarVisibility="Auto" ScrollChanged="ScrollViewer_ScrollChanged">
 
             <!-- ItemsControl répète le modèle ci-dessous pour chaque élément de sa liste.
                  La liste est fournie par le C# : MoviesList.ItemsSource = ... -->

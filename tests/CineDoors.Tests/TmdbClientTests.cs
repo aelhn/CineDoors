@@ -55,4 +55,65 @@ public class TmdbClientTests
         Assert.Null(movies[1].PosterPath);
         Assert.Null(movies[1].Genres);
     }
+
+    [Fact]
+    public void Ressortie_GardeLaDerniereSortieCinemaEnFrance()
+    {
+        // Dates de sortie d'un film de 2019, ressorti au cinéma en France en septembre 2026
+        string json = """
+            {
+              "results": [
+                {
+                  "iso_3166_1": "US",
+                  "release_dates": [
+                    { "release_date": "2026-10-01T00:00:00.000Z", "type": 3 }
+                  ]
+                },
+                {
+                  "iso_3166_1": "FR",
+                  "release_dates": [
+                    { "release_date": "2019-04-24T00:00:00.000Z", "type": 3 },
+                    { "release_date": "2019-08-30T00:00:00.000Z", "type": 5 },
+                    { "release_date": "2026-09-23T00:00:00.000Z", "type": 3 },
+                    { "release_date": "2026-10-05T00:00:00.000Z", "type": 6 },
+                    { "release_date": "2027-01-15T00:00:00.000Z", "type": 3 }
+                  ]
+                }
+              ]
+            }
+            """;
+
+        TmdbClient client = new TmdbClient(new HttpClient());
+        DateOnly firstRelease = new DateOnly(2019, 4, 24);
+        DateOnly latestDate = new DateOnly(2026, 10, 14);
+
+        DateOnly? result = client.ParseFrenchReReleaseDate(json, firstRelease, latestDate);
+
+        // Ecartés : la sortie américaine, le DVD (type 5), la télévision (type 6), la date future de 2027,
+        // et la première sortie elle-même. Il reste le retour en salle du 23 septembre 2026.
+        Assert.Equal(new DateOnly(2026, 9, 23), result);
+    }
+
+    [Fact]
+    public void Ressortie_NullSiLeFilmNEstSortiQuUneFois()
+    {
+        string json = """
+            {
+              "results": [
+                {
+                  "iso_3166_1": "FR",
+                  "release_dates": [
+                    { "release_date": "2019-04-24T00:00:00.000Z", "type": 3 }
+                  ]
+                }
+              ]
+            }
+            """;
+
+        TmdbClient client = new TmdbClient(new HttpClient());
+
+        DateOnly? result = client.ParseFrenchReReleaseDate(json, new DateOnly(2019, 4, 24), new DateOnly(2026, 10, 14));
+
+        Assert.Null(result);
+    }
 }
